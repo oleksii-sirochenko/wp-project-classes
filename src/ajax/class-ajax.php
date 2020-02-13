@@ -63,20 +63,21 @@ class AJAX {
 		}
 	}
 
-	/**
-	 * @param $key string
-	 * @param $value array|int|object|string
-	 */
-	function add_front_scripts_data( $key, $value ) {
-		$this->scripts_data['front'][ $key ] = $value;
+	function add_front_scripts_data( AJAX_Actions $obj ) {
+		$this->set_scripts_data( 'front', $obj->get_scripts_data() );
 	}
 
-	/**
-	 * @param $key string
-	 * @param $value array|int|object|string
-	 */
-	function add_admin_scripts_data( $key, $value ) {
-		$this->scripts_data['admin'][ $key ] = $value;
+	function add_admin_scripts_data( AJAX_Actions $obj ) {
+		$this->set_scripts_data( 'admin', $obj->get_scripts_data() );
+	}
+
+	protected function set_scripts_data( $side, array $data ) {
+		if ( empty( $data ) ) {
+			return;
+		}
+		foreach ( $data as $key => $value ) {
+			$this->scripts_data[ $side ][ $key ] = $value;
+		}
 	}
 
 	function enqueue_scripts() {

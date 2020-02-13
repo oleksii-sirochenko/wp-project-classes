@@ -15,6 +15,10 @@ namespace your\space;
 class Autoloader {
 	protected $class_name;
 	protected $classes_map = array();
+	/**
+	 * @var \RecursiveDirectoryIterator
+	 */
+	protected $directory_iterator;
 
 	function __construct() {
 		/**
@@ -24,11 +28,13 @@ class Autoloader {
 		if ( file_exists( __DIR__ . '/exported-map.php' ) ) {
 			$this->classes_map = include 'exported-map.php';
 		}
+		$this->set_directory_iterator();
 	}
 
 	function load_from_custom_directories( $class_name ) {
-		if ( isset( $this->classes_map[ $class_name ] ) && file_exists( $this->classes_map[ $class_name ] ) ) {
-			require_once $this->classes_map[ $class_name ];
+		if ( isset( $this->classes_map[ $class_name ] ) &&
+		     file_exists( realpath( __DIR__ . DIRECTORY_SEPARATOR . $this->classes_map[ $class_name ] ) ) ) {
+			require_once realpath( __DIR__ . DIRECTORY_SEPARATOR . $this->classes_map[ $class_name ] );
 
 			return;
 		}
@@ -43,7 +49,7 @@ class Autoloader {
 	}
 
 	protected function search_file() {
-		foreach ( new \RecursiveIteratorIterator( $this->get_directory_iterator() ) as $file ) {
+		foreach ( new \RecursiveIteratorIterator( $this->directory_iterator ) as $file ) {
 			/**
 			 * @var \RecursiveDirectoryIterator $file
 			 */
@@ -55,10 +61,10 @@ class Autoloader {
 		return '';
 	}
 
-	protected function get_directory_iterator() {
-		$excluded_dir = __DIR__ . '/libs';
-		$dir          = new \RecursiveDirectoryIterator( __DIR__ . '/..', \RecursiveDirectoryIterator::SKIP_DOTS );
-		$iterator     = new \RecursiveCallbackFilterIterator( $dir, function ( $current, $key, $iterator ) use ( $excluded_dir ) {
+	protected function set_directory_iterator() {
+		$excluded_dir             = __DIR__ . '/../libs';
+		$dir                      = new \RecursiveDirectoryIterator( __DIR__ . '/..', \RecursiveDirectoryIterator::SKIP_DOTS );
+		$this->directory_iterator = new \RecursiveCallbackFilterIterator( $dir, function ( $current, $key, $iterator ) use ( $excluded_dir ) {
 			/**
 			 * @var \RecursiveDirectoryIterator $iterator
 			 */
@@ -72,8 +78,6 @@ class Autoloader {
 
 			return true;
 		} );
-
-		return $iterator;
 	}
 
 	protected function get_processed_class_name( $class_name ) {

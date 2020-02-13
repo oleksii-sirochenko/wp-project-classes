@@ -7,8 +7,20 @@ namespace your\space;
 
 
 class Scripts_Loader {
-	function __construct() {
+	/**
+	 * @var string $min prefix to use in production environment
+	 */
+	protected $min = '';
+	protected $directory_uri;
 
+	function __construct() {
+		$this->directory_uri = get_template_directory_uri();
+	}
+
+	function init() {
+		if ( ! Reg::inst()->is_localhost() ) {
+			$this->min = '.min';
+		}
 	}
 
 	function hooks() {
@@ -36,7 +48,7 @@ class Scripts_Loader {
 
 	protected function enqueue_scripts() {
 		// wp_enqueue_script();
-		wp_enqueue_script( 'test-ajax', get_stylesheet_directory_uri() . '/assets/js/test.js', array( 'jquery' ) );
+		wp_enqueue_script( 'test-ajax', $this->directory_uri . '/assets/js/test' . $this->min . '.js', array( 'jquery' ) );
 	}
 
 	protected function dequeue_scripts() {

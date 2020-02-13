@@ -1,5 +1,5 @@
 # wp-project-classes
-A bunch of useful classes for Wordpress related development
+A bunch of useful classes for Wordpress related development. These classes doesn't related on the last versions of Wordpress and therefor it may be used with any latest version.
 
 Required version PHP >= 5.6
 

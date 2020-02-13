@@ -41,4 +41,10 @@ abstract class AJAX_Actions {
 	 * @return array
 	 */
 	abstract protected function get_actions_sets_array();
+
+	/**
+	 * should return associative array of scripts data
+	 * @return array
+	 */
+	abstract function get_scripts_data();
 }
