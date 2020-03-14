@@ -33,8 +33,8 @@ class Autoloader {
 
 	function load_from_custom_directories( $class_name ) {
 		if ( isset( $this->classes_map[ $class_name ] ) &&
-		     file_exists( realpath( __DIR__ . DIRECTORY_SEPARATOR . $this->classes_map[ $class_name ] ) ) ) {
-			require_once realpath( __DIR__ . DIRECTORY_SEPARATOR . $this->classes_map[ $class_name ] );
+		     ! empty( $file_real_path = realpath( __DIR__ . DIRECTORY_SEPARATOR . $this->classes_map[ $class_name ] ) ) ) {
+			require_once $file_real_path;
 
 			return;
 		}
