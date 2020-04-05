@@ -6,7 +6,7 @@ namespace your\space;
 
 abstract class AJAX_Actions {
 	function get_actions() {
-		$actions_sets = array( $this->get_nonce_actions() );
+		$actions_sets = array();
 
 		foreach ( $this->get_actions_sets_array() as $actions_set ) {
 			$actions_sets[] = $actions_set;
@@ -14,27 +14,11 @@ abstract class AJAX_Actions {
 
 		$actions = array();
 		foreach ( $actions_sets as $actions_set ) {
-			$actions += $actions_set;
+			$actions[] = $actions_set;
 		}
 
 		return $actions;
 	}
-
-	/**
-	 * default actions set
-	 * @return array
-	 */
-	protected function get_nonce_actions() {
-		return array(
-			'get_nonce' => array(
-				'action'   => 'get_nonce',
-				'function' => function () {
-					wp_send_json( AJAX::get_success_response( null, null ) );
-				},
-			),
-		);
-	}
-
 
 	/**
 	 * should return array of actions set
@@ -46,5 +30,7 @@ abstract class AJAX_Actions {
 	 * should return associative array of scripts data
 	 * @return array
 	 */
-	abstract function get_scripts_data();
+	function get_scripts_data() {
+		return null;
+	}
 }

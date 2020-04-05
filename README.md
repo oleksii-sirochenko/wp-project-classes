@@ -3,7 +3,7 @@ A bunch of useful classes for Wordpress related development. These classes doesn
 
 Required version PHP >= 5.6
 
-Version 1.1.0
+Version 1.2.0
 
 With a help of these classes you can lie solid foundation for your WP related project. Classes are suitable for both theme and plugin development.
 
