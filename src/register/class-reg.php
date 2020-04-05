@@ -10,10 +10,12 @@ final class Reg {
 	protected static $instance;
 	public $scripts_loader;
 	public $tmpl;
+	public $ajax;
 
 	protected function __construct() {
 		$this->tmpl           = new Template_Loader( $this->get_theme_directory() );
 		$this->scripts_loader = new Scripts_Loader();
+		$this->ajax           = new AJAX();
 
 		if ( is_admin() ) {
 
@@ -90,6 +92,10 @@ final class Reg {
 		foreach ( $objects as $object ) {
 			$this->run_initializing_methods_on_object( $object, array( 'hooks' ) );
 		}
+	}
+
+	protected function add_ajax_actions() {
+		$this->ajax->add_front_ajax_actions( new Front_Page_AJAX_Actions() );
 	}
 
 	function is_localhost() {
