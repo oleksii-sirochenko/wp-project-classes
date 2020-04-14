@@ -15,7 +15,7 @@ final class Reg {
 	protected function __construct() {
 		$this->tmpl           = new Template_Loader( $this->get_theme_directory() );
 		$this->scripts_loader = new Scripts_Loader();
-		$this->ajax           = new AJAX();
+		$this->init_ajax();
 
 		if ( is_admin() ) {
 
@@ -44,13 +44,7 @@ final class Reg {
 	protected function init() {
 		$this->run_initializing_methods_on_objects();
 		$this->run_hooks_on_objects();
-
-		//debug things for admin
-		if ( current_user_can( 'manage_options' ) || $this->is_localhost() ) {
-			add_action( 'wp_head', function () {
-				$this->test();
-			} );
-		}
+		$this->add_debug_method();
 	}
 
 	/**
@@ -94,12 +88,21 @@ final class Reg {
 		}
 	}
 
-	protected function add_ajax_actions() {
+	protected function init_ajax() {
+		$this->ajax = new AJAX();
 		$this->ajax->add_front_ajax_actions( new Front_Page_AJAX_Actions() );
 	}
 
-	function is_localhost() {
+	public function is_localhost() {
 		return getenv( 'is_localhost' ) == 'true';
+	}
+
+	protected function add_debug_method() {
+		if ( current_user_can( 'manage_options' ) || $this->is_localhost() ) {
+			add_action( 'wp_head', function () {
+				$this->test();
+			} );
+		}
 	}
 
 	protected function test() {
