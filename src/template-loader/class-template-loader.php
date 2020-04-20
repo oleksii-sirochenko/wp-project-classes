@@ -16,14 +16,14 @@ class Template_Loader {
 	 * path to template from dir_path
 	 * @var string
 	 */
-	protected $template_path = 'includes/templates/';
+	protected $template_path = 'includes/templates';
 
 	function __construct( $dir_path = null, $template_path = null ) {
 		if ( ! is_null( $dir_path ) ) {
-			$this->dir_path = trailingslashit( $dir_path );
+			$this->dir_path = rtrim( $dir_path, '/\\' );
 		}
 		if ( ! is_null( $template_path ) ) {
-			$this->template_path = trailingslashit( $template_path );
+			$this->template_path = rtrim( $template_path, '/\\' );
 		}
 	}
 
@@ -34,13 +34,13 @@ class Template_Loader {
 	 *
 	 * @return string|bool
 	 */
-	function get_template( $file_name = '', $path_from_template = '', $args = null ) {
+	function get_template( $file_name = '', $path_from_template = '', array $args = null ) {
 		if ( empty( $file_name ) ) {
 			return false;
 		}
 
-		$path_from_template = trailingslashit( $this->dir_path . $this->template_path . $path_from_template );
-		$path               = $path_from_template . $file_name;
+		$path_from_template = rtrim( $this->dir_path . '/' . $this->template_path . '/' . $path_from_template, '/\\' );
+		$path               = $path_from_template . '/' . $file_name;
 
 		if ( is_array( $args ) ) {
 			extract( $args );
@@ -59,7 +59,7 @@ class Template_Loader {
 		}
 	}
 
-	function get_template_as_string( $file_name = null, $path_from_template = null, $args = null ) {
+	function get_template_as_string( $file_name = null, $path_from_template = null, array $args = null ) {
 		ob_start();
 		$this->get_template( $file_name, $path_from_template, $args );
 
