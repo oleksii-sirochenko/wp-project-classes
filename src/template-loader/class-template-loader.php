@@ -18,35 +18,33 @@ class Template_Loader {
 	 */
 	protected $template_path = 'includes/templates';
 
-	function __construct( $dir_path = null, $template_path = null ) {
-		if ( ! is_null( $dir_path ) ) {
-			$this->dir_path = rtrim( $dir_path, '/\\' );
-		}
-		if ( ! is_null( $template_path ) ) {
+	/**
+	 * Template_Loader constructor.
+	 *
+	 * @param string $dir_path
+	 * @param string $template_path
+	 */
+	function __construct( $dir_path, $template_path = '' ) {
+		$this->dir_path = rtrim( $dir_path, '/\\' );
+
+		if ( ! empty( $template_path ) ) {
 			$this->template_path = rtrim( $template_path, '/\\' );
 		}
 	}
 
 	/**
 	 * @param string $file_name
-	 * @param string $path_from_template - without trailing slash
+	 * @param string $path_from_template
 	 * @param array $args
 	 *
 	 * @return string|bool
 	 */
-	function get_template( $file_name = '', $path_from_template = '', array $args = null ) {
-		if ( empty( $file_name ) ) {
-			return false;
-		}
-
+	function get_template( $file_name, $path_from_template, array $args = array() ) {
 		$path_from_template = rtrim( $this->dir_path . '/' . $this->template_path . '/' . $path_from_template, '/\\' );
 		$path               = $path_from_template . '/' . $file_name;
 
-		if ( is_array( $args ) ) {
-			extract( $args );
-		}
-
 		if ( file_exists( $path ) ) {
+			extract( $args );
 			include $path;
 		} else {
 			if ( Reg::inst()->is_localhost() ) {
@@ -59,7 +57,14 @@ class Template_Loader {
 		}
 	}
 
-	function get_template_as_string( $file_name = null, $path_from_template = null, array $args = null ) {
+	/**
+	 * @param string $file_name
+	 * @param string $path_from_template
+	 * @param array $args
+	 *
+	 * @return string|bool
+	 */
+	function get_template_as_string( $file_name, $path_from_template, array $args = array() ) {
 		ob_start();
 		$this->get_template( $file_name, $path_from_template, $args );
 
