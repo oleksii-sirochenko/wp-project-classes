@@ -5,34 +5,21 @@ namespace your\space;
 
 
 abstract class AJAX_Actions {
-    function get_actions() {
-        $actions_sets = array();
-        
-        foreach ( $this->get_actions_sets_array() as $actions_set ) {
-            $actions_sets[] = $actions_set;
-        }
-        
-        $actions = array();
-        foreach ( $actions_sets as $actions_set ) {
-            $actions[] = $actions_set;
-        }
-        
-        return $actions;
-    }
-    
     /**
-     * should return array of actions set
+     * Must return array of arrays. Each array item is consists of action key with key and function key with callable.
+     * It can have 'logged' key that will turn actions to be attached for logged in users or not. If 'logged' key is not
+     * specified AJAX action attaches to both types of users.
      *
      * @return array
      */
-    abstract protected function get_actions_sets_array();
+    public abstract function get_actions();
     
     /**
-     * should return associative array of scripts data
+     * Should return associative array of scripts data.
      *
      * @return array
      */
-    function get_scripts_data() {
+    public function get_scripts_data() {
         return null;
     }
 }

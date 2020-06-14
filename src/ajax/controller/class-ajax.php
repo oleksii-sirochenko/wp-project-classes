@@ -3,20 +3,33 @@
 namespace your\space;
 
 class AJAX {
+    /**
+     * AJAX response status constant.
+     */
     const STATUS_SUCCESS = 'success';
+    
+    /**
+     * AJAX response status constant.
+     */
     const STATUS_ERROR = 'error';
+    
+    /**
+     * Javascript, browser's window object property with the help of which backend sends useful data to frontend (JS).
+     */
     const KEY = 'wp_ajax_config';
+    
     /**
      * @var AJAX_Actions[]
      */
     protected $ajax_actions_sets = array();
+    
     /**
-     * array with args for creating the ajax requests
+     * Array with args for creating the ajax requests.
      * <code>
      * array(
      *   array(
-     *    'action'    =>  string $ajax_action_name,  // Ajax action
-     *    'function'  =>  callable function(){},     // Callback method to handle $action
+     *    'action'    =>  string $ajax_action_name,  // Ajax action.
+     *    'function'  =>  callable function(){},     // Callback method to handle $action.
      *    'logged'    =>  boolean,                   // Is logged?
      *   )
      * )
@@ -24,17 +37,38 @@ class AJAX {
      *
      */
     protected $ajax_actions = array();
+    
+    /**
+     * Scripts data divided by frontend type.
+     *
+     * @var array
+     */
     protected $scripts_data = array(
         'front' => array(),
         'admin' => array(),
     );
+    
+    /**
+     * Name of the script to which will be attached custom scripts data for frontend use.
+     *
+     * @var string
+     */
     protected $script_name_to_attach_data = 'jquery';
+    
+    /**
+     * Identifies whether data from property 'scripts_data' was attached to frontend.
+     *
+     * @var bool
+     */
     protected $is_localized = false;
     
-    function __construct() {
+    public function __construct() {
     }
     
-    function hooks() {
+    /**
+     * Attaches methods to hooks.
+     */
+    public function hooks() {
         switch ( $this->get_side() ) {
             case 'front':
                 add_action( 'wp', array( $this, 'set_actions' ) );
@@ -47,6 +81,11 @@ class AJAX {
         }
     }
     
+    /**
+     * Returns type of the frontend side visited by user.
+     *
+     * @return string
+     */
     protected function get_side() {
         static $side;
         if ( empty( $side ) ) {
@@ -60,29 +99,51 @@ class AJAX {
         return $side;
     }
     
-    function add_front_ajax_actions( AJAX_Actions $obj ) {
+    /**
+     * Registers sets of actions for 'front' frontend side.
+     *
+     * @param AJAX_Actions $obj
+     */
+    public function add_front_ajax_actions( AJAX_Actions $obj ) {
         $this->ajax_actions_sets[] = $obj;
     }
     
-    function add_admin_ajax_actions( AJAX_Actions $obj ) {
+    /**
+     * Registers sets of actions for 'admin' frontend side.
+     *
+     * @param AJAX_Actions $obj
+     */
+    public function add_admin_ajax_actions( AJAX_Actions $obj ) {
         if ( $this->get_side() === 'admin' ) {
             $this->ajax_actions_sets[] = $obj;
         }
     }
     
-    function add_front_scripts_data( AJAX_Actions $obj ) {
+    /**
+     * Adds custom backend data to attach for 'front' frontend side.
+     *
+     * @param AJAX_Actions $obj
+     */
+    public function add_front_scripts_data( AJAX_Actions $obj ) {
         $this->add_scripts_data( 'front', $obj->get_scripts_data() );
     }
     
-    function add_admin_scripts_data( AJAX_Actions $obj ) {
+    /**
+     * Adds custom backend data to attach for 'admin' frontend side.
+     *
+     * @param AJAX_Actions $obj
+     */
+    public function add_admin_scripts_data( AJAX_Actions $obj ) {
         $this->add_scripts_data( 'admin', $obj->get_scripts_data() );
     }
     
     /**
+     * Adds custom backend data to certain frontend side.
+     *
      * @param string $side - possible values 'front','admin'
      * @param array  $data
      */
-    function add_scripts_data( $side, array $data ) {
+    public function add_scripts_data( $side, array $data ) {
         if ( empty( $data ) ) {
             return;
         }
@@ -91,7 +152,10 @@ class AJAX {
         }
     }
     
-    function enqueue_scripts() {
+    /**
+     * Attaches custom backed data 'scripts_data' to use in frontend (JS)
+     */
+    public function enqueue_scripts() {
         if ( $this->is_localized === true ) {
             return;
         }
@@ -115,11 +179,19 @@ class AJAX {
         $this->is_localized = wp_localize_script( $this->script_name_to_attach_data, self::KEY, $config_array );
     }
     
-    function set_script_name_to_attach_data( $enqueued_script_name ) {
+    /**
+     * @setter
+     *
+     * @param $enqueued_script_name
+     */
+    public function set_script_name_to_attach_data( $enqueued_script_name ) {
         $this->script_name_to_attach_data = $enqueued_script_name;
     }
     
-    function set_actions() {
+    /**
+     * Collects all registered actions into one array of actions and executes attach method.
+     */
+    public function set_actions() {
         /**
          * @var AJAX_Actions $ajax_actions_set
          */
@@ -136,6 +208,11 @@ class AJAX {
         $this->attach_actions( $this->ajax_actions );
     }
     
+    /**
+     * Attaches AJAX actions to WP in it's standard way.
+     *
+     * @param array $actions
+     */
     protected function attach_actions( array $actions ) {
         $added_actions = array();
         foreach ( $actions as $action ) {
@@ -156,15 +233,40 @@ class AJAX {
         }
     }
     
-    static function get_success_response( $data = null, $message = null ) {
+    /**
+     * Returns success response for AJAX request.
+     *
+     * @param mixed  $data
+     * @param string $message
+     *
+     * @return array
+     */
+    public static function get_success_response( $data = null, $message = '' ) {
         return self::get_response_with_status( self::STATUS_SUCCESS, $data, $message );
     }
     
-    static function get_error_response( $data = null, $message = null ) {
+    /**
+     * Returns error response for AJAX request.
+     *
+     * @param mixed  $data
+     * @param string $message
+     *
+     * @return array
+     */
+    public static function get_error_response( $data = null, $message = '' ) {
         return self::get_response_with_status( self::STATUS_ERROR, $data, $message );
     }
     
-    protected static function get_response_with_status( $status, $data = null, $message = null ) {
+    /**
+     * Returns AJAX response with status, nonce, custom data and response message.
+     *
+     * @param string $status
+     * @param mixed  $data
+     * @param string $message
+     *
+     * @return array
+     */
+    protected static function get_response_with_status( $status, $data = null, $message = '' ) {
         $response = array(
             'status' => $status,
             'nonce'  => wp_create_nonce( self::KEY ),
@@ -179,9 +281,9 @@ class AJAX {
     }
     
     /**
-     * should be used in AJAX handlers before process the request
+     * Validates AJAX request. Should be used in AJAX handlers before process the request.
      */
-    static function validate_request() {
+    public static function validate_request() {
         $nonce = $_POST['nonce'];
         
         if ( ! wp_verify_nonce( $nonce, self::KEY ) ) {
@@ -190,9 +292,10 @@ class AJAX {
     }
     
     /**
-     * should be used in AJAX handles on the admin side before process the request
+     * Validates AJAX request in admin frontend side. Should be used in AJAX handles on the admin side before process
+     * the request.
      */
-    static function validate_admin_side_request() {
+    public static function validate_admin_side_request() {
         self::validate_request();
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_send_json( self::get_error_response( null, 'Unauthorized request!' ) );
