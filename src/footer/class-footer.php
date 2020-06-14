@@ -5,11 +5,11 @@ namespace your\space;
 
 
 class Footer {
-	function __construct() {
-
-	}
-
-	function hooks() {
-
-	}
+    function __construct() {
+        
+    }
+    
+    function hooks() {
+        
+    }
 }

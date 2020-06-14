@@ -16,49 +16,49 @@
 namespace your\space;
 
 final class Plugin_Starter {
-	const PATH = __DIR__;
-	protected static $instance;
-	protected $reg;
-
-	protected function __construct() {
-
-	}
-
-	static function inst() {
-		if ( isset( self::$instance ) ) {
-			return self::$instance;
-		} else {
-			self::$instance = new self();
-
-			require_once plugin_dir_path( __FILE__ ) . 'includes/classes/autoloader/class-autoloader.php';
-
-			self::$instance->init();
-			self::$instance->hooks();
-
-			return self::$instance;
-		}
-	}
-
-	protected function hooks() {
-		register_activation_hook( __FILE__, array( $this, 'register_activation' ) );
-		register_deactivation_hook( __FILE__, array( $this, 'register_deactivation' ) );
-	}
-
-	function register_activation() {
-		Reg::inst()->register_activation_hooks();
-	}
-
-	function register_deactivation() {
-		Reg::inst()->register_deactivation_hooks();
-	}
-
-	protected function init() {
-		$this->reg = Reg::inst();
-	}
-
-	static function plugin_url() {
-		return plugin_dir_url( __FILE__ );
-	}
+    const PATH = __DIR__;
+    protected static $instance;
+    protected $reg;
+    
+    protected function __construct() {
+    
+    }
+    
+    static function inst() {
+        if ( isset( self::$instance ) ) {
+            return self::$instance;
+        } else {
+            self::$instance = new self();
+            
+            require_once plugin_dir_path( __FILE__ ) . 'includes/classes/autoloader/class-autoloader.php';
+            
+            self::$instance->init();
+            self::$instance->hooks();
+            
+            return self::$instance;
+        }
+    }
+    
+    protected function hooks() {
+        register_activation_hook( __FILE__, array( $this, 'register_activation' ) );
+        register_deactivation_hook( __FILE__, array( $this, 'register_deactivation' ) );
+    }
+    
+    function register_activation() {
+        Reg::inst()->register_activation_hooks();
+    }
+    
+    function register_deactivation() {
+        Reg::inst()->register_deactivation_hooks();
+    }
+    
+    protected function init() {
+        $this->reg = Reg::inst();
+    }
+    
+    static function plugin_url() {
+        return plugin_dir_url( __FILE__ );
+    }
 }
 
 Plugin_Starter::inst();

@@ -5,11 +5,11 @@ namespace your\space;
 
 
 class Header {
-	function __construct() {
-
-	}
-
-	function hooks() {
-
-	}
+    function __construct() {
+        
+    }
+    
+    function hooks() {
+        
+    }
 }
