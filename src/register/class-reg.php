@@ -118,8 +118,8 @@ final class Reg {
      * Initializes AJAX logic. In this method you can create AJAX controller and add object with ajax actions to it.
      */
     protected function init_ajax() {
-        $ajax = new AJAX();
-        $ajax->add_front_ajax_actions( new Front_Page_AJAX_Actions() );
+        $this->ajax = new AJAX();
+        $this->ajax->add_front_ajax_actions( new Front_Page_AJAX_Actions() );
     }
     
     /**
