@@ -119,7 +119,7 @@ final class Reg {
      */
     protected function init_ajax() {
         $this->ajax = new AJAX();
-        $this->ajax->add_front_ajax_actions( new Front_Page_AJAX_Actions() );
+        $this->ajax->add_ajax_actions( new Front_Page_AJAX_Actions() );
     }
     
     /**
