@@ -69,13 +69,13 @@ class AJAX {
      * Attaches methods to hooks.
      */
     public function hooks() {
+        add_action( 'admin_init', array( $this, 'attach_actions' ) );
+        
         switch ( $this->get_side() ) {
             case 'front':
-                add_action( 'wp', array( $this, 'set_actions' ) );
                 add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
                 break;
             case 'admin':
-                add_action( 'admin_init', array( $this, 'set_actions' ) );
                 add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
                 break;
         }
@@ -89,7 +89,7 @@ class AJAX {
     protected function get_side() {
         static $side;
         if ( empty( $side ) ) {
-            if ( is_admin() ) {
+            if ( is_admin() && ! wp_doing_ajax() ) {
                 $side = 'admin';
             } else {
                 $side = 'front';
@@ -100,47 +100,19 @@ class AJAX {
     }
     
     /**
-     * Registers sets of actions for 'front' frontend side.
+     * Registers sets of actions and handlers for AJAX.
      *
      * @param AJAX_Actions $obj
      */
-    public function add_front_ajax_actions( AJAX_Actions $obj ) {
+    public function add_ajax_actions( AJAX_Actions $obj ) {
         $this->ajax_actions_sets[] = $obj;
-    }
-    
-    /**
-     * Registers sets of actions for 'admin' frontend side.
-     *
-     * @param AJAX_Actions $obj
-     */
-    public function add_admin_ajax_actions( AJAX_Actions $obj ) {
-        if ( $this->get_side() === 'admin' ) {
-            $this->ajax_actions_sets[] = $obj;
-        }
-    }
-    
-    /**
-     * Adds custom backend data to attach for 'front' frontend side.
-     *
-     * @param AJAX_Actions $obj
-     */
-    public function add_front_scripts_data( AJAX_Actions $obj ) {
-        $this->add_scripts_data( 'front', $obj->get_scripts_data() );
-    }
-    
-    /**
-     * Adds custom backend data to attach for 'admin' frontend side.
-     *
-     * @param AJAX_Actions $obj
-     */
-    public function add_admin_scripts_data( AJAX_Actions $obj ) {
-        $this->add_scripts_data( 'admin', $obj->get_scripts_data() );
+        $this->ajax_actions        = array_merge( array(), $this->ajax_actions, $obj->get_actions() );
     }
     
     /**
      * Adds custom backend data to certain frontend side.
      *
-     * @param string $side - possible values 'front','admin'
+     * @param string $side - possible values 'front','admin'.
      * @param array  $data
      */
     public function add_scripts_data( $side, array $data ) {
@@ -153,7 +125,7 @@ class AJAX {
     }
     
     /**
-     * Attaches custom backed data 'scripts_data' to use in frontend (JS)
+     * Attaches custom backed data 'scripts_data' to use in frontend (JS).
      */
     public function enqueue_scripts() {
         if ( $this->is_localized === true ) {
@@ -169,6 +141,8 @@ class AJAX {
             $config_array['actions'][ $ajax_action['action'] ] = $ajax_action['action'];
         }
         
+        $this->set_scripts_data();
+        
         foreach ( $this->scripts_data[ $this->get_side() ] as $key => $value ) {
             if ( ! isset( $config_array[ $key ] ) ) {
                 $config_array[ $key ] = $value;
@@ -177,6 +151,17 @@ class AJAX {
         
         // attach js file to the jquery file which is auto loads with wordpress
         $this->is_localized = wp_localize_script( $this->script_name_to_attach_data, self::KEY, $config_array );
+    }
+    
+    /**
+     * Sets scripts data by invoking callbacks. This method runs during actions 'wp_enqueue_scripts',
+     * 'admin_enqueue_scripts' where all conditional tags are evaluated and the current page is defined. Therefore
+     * AJAX actions sets can rely on it and properly check current page whether to add data or not.
+     */
+    protected function set_scripts_data() {
+        foreach ( $this->ajax_actions_sets as $ajax_actions ) {
+            $this->add_scripts_data( $this->get_side(), $ajax_actions->get_scripts_data() );
+        }
     }
     
     /**
@@ -189,33 +174,11 @@ class AJAX {
     }
     
     /**
-     * Collects all registered actions into one array of actions and executes attach method.
-     */
-    public function set_actions() {
-        /**
-         * @var AJAX_Actions $ajax_actions_set
-         */
-        foreach ( $this->ajax_actions_sets as $ajax_actions_set ) {
-            $this->ajax_actions = array_merge( array(), $this->ajax_actions, $ajax_actions_set->get_actions() );
-        }
-        
-        if ( $this->get_side() === 'admin' ) {
-            foreach ( $this->ajax_actions as $key => $ajax_action ) {
-                $this->ajax_actions[ $key ]['logged'] = true;
-            }
-        }
-        
-        $this->attach_actions( $this->ajax_actions );
-    }
-    
-    /**
      * Attaches AJAX actions to WP in it's standard way.
-     *
-     * @param array $actions
      */
-    protected function attach_actions( array $actions ) {
+    public function attach_actions() {
         $added_actions = array();
-        foreach ( $actions as $action ) {
+        foreach ( $this->ajax_actions as $action ) {
             if ( in_array( $action['action'], $added_actions ) ) {
                 throw new \InvalidArgumentException( 'There is a key collision between ajax actions' );
             }
