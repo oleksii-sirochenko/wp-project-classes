@@ -61,7 +61,7 @@ class Transient_Cache {
     
     function cache_result_tmpl_render_callback( $cache_id, $callback ) {
         $cache = $this->get_cache( $cache_id );
-        if ( ! empty( $cache ) && ! Reg::inst()->is_localhost() ) {
+        if ( ! empty( $cache ) && ! WP_DEBUG ) {
             return $cache;
         }
         if ( ! is_callable( $callback ) ) {

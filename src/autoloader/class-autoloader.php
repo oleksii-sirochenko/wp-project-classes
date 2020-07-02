@@ -148,7 +148,7 @@ class Autoloader {
     }
     
     /**
-     * Normilizes class name to be suitable in filesystem scan.
+     * Normalizes class name to be suitable in filesystem scan.
      *
      * @param string $class_name
      *

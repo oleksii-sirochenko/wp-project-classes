@@ -3,7 +3,7 @@
 namespace your\space;
 
 /**
- * Registry is a final singleton class that controls classes
+ * Registry is a final singleton class that controls classes.
  */
 final class Reg {
     /**
@@ -52,14 +52,27 @@ final class Reg {
         }
     }
     
+    /**
+     * Get theme directory path.
+     *
+     * @return mixed
+     */
     protected function get_theme_directory() {
         return get_stylesheet_directory();
     }
     
+    /**
+     * Get plugin directory path.
+     *
+     * @return string
+     */
     protected function get_plugin_directory() {
         return dirname( __FILE__, 3 );
     }
     
+    /**
+     * Initializes object once per load.
+     */
     protected function init() {
         $this->run_initializing_methods_on_objects();
         $this->run_hooks_on_objects();
@@ -119,16 +132,7 @@ final class Reg {
      */
     protected function init_ajax() {
         $this->ajax = new AJAX();
-        $this->ajax->add_ajax_actions( new Front_Page_AJAX_Actions() );
-    }
-    
-    /**
-     * Checks is site running under development environment.
-     *
-     * @return bool
-     */
-    public function is_localhost() {
-        return getenv( 'is_localhost' ) == 'true';
+        $this->ajax->add_front_side_ajax_actions( new Front_Page_AJAX_Actions() );
     }
     
     /**

@@ -49,7 +49,7 @@ class Template_Loader {
             extract( $args );
             include $path;
         } else {
-            if ( Reg::inst()->is_localhost() ) {
+            if ( WP_DEBUG ) {
                 ?>
                 <div style="font-size:20px; color: red; background-color:white; padding: 0 5px;">Template was not found:
                     <strong><?php echo $path; ?></strong>
