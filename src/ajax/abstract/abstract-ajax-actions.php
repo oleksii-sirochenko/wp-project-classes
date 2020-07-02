@@ -1,10 +1,19 @@
 <?php
 
-
 namespace your\space;
 
-
+/**
+ * Abstract instance of default AJAX actions functionality.
+ */
 abstract class AJAX_Actions {
+    /**
+     * Defines for what side to attach this action label to scripts data.
+     * Possible values are: 'front', 'admin'.
+     *
+     * @var string
+     */
+    protected $side = 'front';
+    
     /**
      * Must return array of arrays. Each array item is consists of action key with key and function key with callable.
      * It can have 'logged' key that will turn actions to be attached for logged in users or not. If 'logged' key is not
@@ -20,6 +29,6 @@ abstract class AJAX_Actions {
      * @return array
      */
     public function get_scripts_data() {
-        return null;
+        return array();
     }
 }

@@ -1,9 +1,10 @@
 <?php
 
-
 namespace your\space;
 
-
+/**
+ * Collects AJAX actions and returns to its attached controller.
+ */
 class Front_Page_AJAX_Actions extends AJAX_Actions {
     public function get_actions() {
         return array(

@@ -2,6 +2,10 @@
 
 namespace your\space;
 
+/**
+ * AJAX actions register. Controls registration of AJAX actions, population of backend data to frontend side. Has
+ * several AJAX validation methods.
+ */
 class AJAX {
     /**
      * AJAX response status constant.
@@ -19,9 +23,14 @@ class AJAX {
     const KEY = 'wp_ajax_config';
     
     /**
+     * Array of AJAX_Actions separated by site sides 'front' or 'admin'.
+     *
      * @var AJAX_Actions[]
      */
-    protected $ajax_actions_sets = array();
+    protected $ajax_actions_sets = array(
+        'front' => array(),
+        'admin' => array(),
+    );
     
     /**
      * Array with args for creating the ajax requests.
@@ -44,6 +53,16 @@ class AJAX {
      * @var array
      */
     protected $scripts_data = array(
+        'front' => array(),
+        'admin' => array(),
+    );
+    
+    /**
+     * AJAX actions labels orders by side.
+     *
+     * @var array
+     */
+    protected $actions_labels_by_side = array(
         'front' => array(),
         'admin' => array(),
     );
@@ -100,13 +119,36 @@ class AJAX {
     }
     
     /**
-     * Registers sets of actions and handlers for AJAX.
+     * Attaches AJAX actions for front side of the site.
      *
      * @param AJAX_Actions $obj
      */
-    public function add_ajax_actions( AJAX_Actions $obj ) {
-        $this->ajax_actions_sets[] = $obj;
-        $this->ajax_actions        = array_merge( array(), $this->ajax_actions, $obj->get_actions() );
+    public function add_front_side_ajax_actions( AJAX_Actions $obj ) {
+        $this->add_ajax_actions( $obj, 'front' );
+    }
+    
+    /**
+     * Attaches AJAX actions for admin side of the site.
+     *
+     * @param AJAX_Actions $obj
+     */
+    public function add_admin_side_ajax_actions( AJAX_Actions $obj ) {
+        $this->add_ajax_actions( $obj, 'admin' );
+    }
+    
+    /**
+     * Registers sets of actions and handlers for AJAX.
+     *
+     * @param AJAX_Actions $obj
+     * @param string       $side Site side 'front', 'admin'
+     */
+    public function add_ajax_actions( AJAX_Actions $obj, $side ) {
+        $this->ajax_actions_sets[ $side ] = $obj;
+        
+        foreach ( $obj->get_actions() as $action ) {
+            $this->ajax_actions[]                    = $action;
+            $this->actions_labels_by_side[ $side ][] = $action['action'];
+        }
     }
     
     /**
@@ -137,8 +179,8 @@ class AJAX {
             'nonce' => wp_create_nonce( self::KEY ),
         );
         
-        foreach ( $this->ajax_actions as $ajax_action ) {
-            $config_array['actions'][ $ajax_action['action'] ] = $ajax_action['action'];
+        foreach ( $this->actions_labels_by_side[ $this->get_side() ] as $ajax_action ) {
+            $config_array['actions'][ $ajax_action ] = $ajax_action;
         }
         
         $this->set_scripts_data();
@@ -159,7 +201,7 @@ class AJAX {
      * AJAX actions sets can rely on it and properly check current page whether to add data or not.
      */
     protected function set_scripts_data() {
-        foreach ( $this->ajax_actions_sets as $ajax_actions ) {
+        foreach ( $this->ajax_actions_sets[ $this->get_side() ] as $ajax_actions ) {
             $this->add_scripts_data( $this->get_side(), $ajax_actions->get_scripts_data() );
         }
     }
@@ -174,7 +216,7 @@ class AJAX {
     }
     
     /**
-     * Attaches AJAX actions to WP in it's standard way.
+     * Attaches AJAX actions to WP in its standard way.
      */
     public function attach_actions() {
         $added_actions = array();
