@@ -2,18 +2,27 @@
 
 namespace your\space;
 
-
+/**
+ * Theme configurator. Configures and adjusts theme related features. Deregisters bloated featured that are undesirable
+ * for most of the sites but present in default installation.
+ */
 class Theme_Setup {
     function __construct() {
         
     }
     
+    /**
+     * Attaches methods to hooks.
+     */
     function hooks() {
         add_action( 'after_setup_theme', array( $this, 'after_setup_theme' ) );
         $this->unhook_rest_api();
         $this->unhook_bloated_things();
     }
     
+    /**
+     * Unhooks undesired REST API support. Useful when site is not meant to be REST API compliant.
+     */
     function unhook_rest_api() {
         remove_action( 'template_redirect', 'rest_output_link_header', 11 );
         // Remove the REST API lines from the HTML Header
@@ -22,6 +31,9 @@ class Theme_Setup {
         remove_action( 'rest_api_init', 'wp_oembed_register_route' );
     }
     
+    /**
+     * Unhooks bloated things from default WP installation.
+     */
     function unhook_bloated_things() {
         add_filter( 'use_block_editor_for_post', '__return_false' );
         // Turn off oEmbed auto discovery.
@@ -47,20 +59,32 @@ class Theme_Setup {
         add_filter( 'wf_disable_generator_tags', '__return_empty_string' );
     }
     
+    /**
+     * Invokes on action after_setup_theme to provide an ability to add and remove features that configure theme.
+     */
     function after_setup_theme() {
         $this->load_theme_textdomain();
         $this->add_image_sizes();
         $this->add_theme_support();
     }
     
+    /**
+     * Loads theme text domain for translations purpose.
+     */
     protected function load_theme_textdomain() {
         load_theme_textdomain( 'domain', get_stylesheet_directory() . '/languages' );
     }
     
+    /**
+     * Registers custom image sizes.
+     */
     protected function add_image_sizes() {
         add_image_size( 'article', 320, 240, true );
     }
     
+    /**
+     * Enables features of theme.
+     */
     protected function add_theme_support() {
         add_theme_support( 'post-thumbnails' );
         add_theme_support( 'menus' );

@@ -22,7 +22,7 @@ class Scripts_Loader {
      * Initializes main object functionality.
      */
     function init() {
-        if ( SCRIPT_DEBUG ) {
+        if ( ! SCRIPT_DEBUG ) {
             $this->min = '.min';
         }
     }
