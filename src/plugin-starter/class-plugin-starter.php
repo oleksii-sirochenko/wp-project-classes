@@ -30,7 +30,8 @@ final class Plugin_Starter {
         } else {
             self::$instance = new self();
             
-            require_once plugin_dir_path( __FILE__ ) . 'includes/classes/autoloader/class-autoloader.php';
+            require_once self::PATH . '/includes/constants/constants.php';
+            require_once self::PATH . '/includes/classes/autoloader/class-autoloader.php';
             
             self::$instance->init();
             self::$instance->hooks();

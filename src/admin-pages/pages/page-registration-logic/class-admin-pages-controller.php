@@ -28,4 +28,8 @@ class Admin_Pages_Controller {
     function register_page( Registrable_Admin_Page $page, Registrable_Admin_Page $parent_page = null ) {
         $this->page_storage->add_page( $page, $parent_page );
     }
+    
+    function get_page($class_name){
+        //todo implement it
+    }
 }

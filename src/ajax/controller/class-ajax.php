@@ -143,7 +143,7 @@ class AJAX {
      * @param string       $side Site side 'front', 'admin'
      */
     public function add_ajax_actions( AJAX_Actions $obj, $side ) {
-        $this->ajax_actions_sets[ $side ] = $obj;
+        $this->ajax_actions_sets[ $side ][] = $obj;
         
         foreach ( $obj->get_actions() as $action ) {
             $this->ajax_actions[]                    = $action;

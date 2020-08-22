@@ -7,14 +7,6 @@ namespace your\space;
  */
 abstract class AJAX_Actions {
     /**
-     * Defines for what side to attach this action label to scripts data.
-     * Possible values are: 'front', 'admin'.
-     *
-     * @var string
-     */
-    protected $side = 'front';
-    
-    /**
      * Must return array of arrays. Each array item is consists of action key with key and function key with callable.
      * It can have 'logged' key that will turn actions to be attached for logged in users or not. If 'logged' key is not
      * specified AJAX action attaches to both types of users.

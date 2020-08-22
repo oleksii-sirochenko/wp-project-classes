@@ -28,7 +28,7 @@ final class Reg {
     public $ajax;
     
     protected function __construct() {
-        $this->tmpl = new Template_Loader( $this->get_theme_directory() );
+        $this->tmpl = new Template_Loader( PATH );
         $this->init_ajax();
         
         if ( is_admin() ) {
@@ -50,24 +50,6 @@ final class Reg {
             
             return self::$instance;
         }
-    }
-    
-    /**
-     * Get theme directory path.
-     *
-     * @return mixed
-     */
-    protected function get_theme_directory() {
-        return get_stylesheet_directory();
-    }
-    
-    /**
-     * Get plugin directory path.
-     *
-     * @return string
-     */
-    protected function get_plugin_directory() {
-        return dirname( __FILE__, 3 );
     }
     
     /**
