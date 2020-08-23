@@ -23,11 +23,12 @@ class AJAX {
     const KEY = 'wp_ajax_config';
     
     /**
-     * Array of AJAX_Actions separated by site sides 'front' or 'admin'.
+     * Array of AJAX_Actions separated by site sides 'front', 'admin', 'all'.
      *
      * @var AJAX_Actions[]
      */
     protected $ajax_actions_sets = array(
+        'all'   => array(),
         'front' => array(),
         'admin' => array(),
     );
@@ -48,21 +49,12 @@ class AJAX {
     protected $ajax_actions = array();
     
     /**
-     * Scripts data divided by frontend type.
-     *
-     * @var array
-     */
-    protected $scripts_data = array(
-        'front' => array(),
-        'admin' => array(),
-    );
-    
-    /**
      * AJAX actions labels orders by side.
      *
      * @var array
      */
     protected $actions_labels_by_side = array(
+        'all'   => array(),
         'front' => array(),
         'admin' => array(),
     );
@@ -119,6 +111,15 @@ class AJAX {
     }
     
     /**
+     * Attaches AJAX actions for all sides of the site.
+     *
+     * @param AJAX_Actions $obj
+     */
+    public function add_all_sides_ajax_actions( AJAX_Actions $obj ) {
+        $this->add_ajax_actions( $obj, 'all' );
+    }
+    
+    /**
      * Attaches AJAX actions for front side of the site.
      *
      * @param AJAX_Actions $obj
@@ -140,7 +141,7 @@ class AJAX {
      * Registers sets of actions and handlers for AJAX.
      *
      * @param AJAX_Actions $obj
-     * @param string       $side Site side 'front', 'admin'
+     * @param string       $side Site side 'front', 'admin', 'all'.
      */
     public function add_ajax_actions( AJAX_Actions $obj, $side ) {
         $this->ajax_actions_sets[ $side ][] = $obj;
@@ -152,21 +153,6 @@ class AJAX {
     }
     
     /**
-     * Adds custom backend data to certain frontend side.
-     *
-     * @param string $side - possible values 'front','admin'.
-     * @param array  $data
-     */
-    public function add_scripts_data( $side, array $data ) {
-        if ( empty( $data ) ) {
-            return;
-        }
-        foreach ( $data as $key => $value ) {
-            $this->scripts_data[ $side ][ $key ] = $value;
-        }
-    }
-    
-    /**
      * Attaches custom backed data 'scripts_data' to use in frontend (JS).
      */
     public function enqueue_scripts() {
@@ -174,36 +160,72 @@ class AJAX {
             return;
         }
         
-        $config_array = array(
+        $config = array(
             'url'   => admin_url( 'admin-ajax.php' ),
             'nonce' => wp_create_nonce( self::KEY ),
         );
         
-        foreach ( $this->actions_labels_by_side[ $this->get_side() ] as $ajax_action ) {
-            $config_array['actions'][ $ajax_action ] = $ajax_action;
+        foreach ( $this->get_actions_labels_by_sides( array( 'all', $this->get_side() ) ) as $ajax_action ) {
+            $config['actions'][ $ajax_action ] = $ajax_action;
         }
         
-        $this->set_scripts_data();
-        
-        foreach ( $this->scripts_data[ $this->get_side() ] as $key => $value ) {
-            if ( ! isset( $config_array[ $key ] ) ) {
-                $config_array[ $key ] = $value;
+        foreach ( $this->get_scripts_data( array( 'all', $this->get_side() ) ) as $key => $value ) {
+            if ( ! isset( $config[ $key ] ) ) {
+                $config[ $key ] = $value;
             }
         }
         
         // attach js file to the jquery file which is auto loads with wordpress
-        $this->is_localized = wp_localize_script( $this->script_name_to_attach_data, self::KEY, $config_array );
+        $this->is_localized = wp_localize_script( $this->script_name_to_attach_data, self::KEY, $config );
     }
     
     /**
-     * Sets scripts data by invoking callbacks. This method runs during actions 'wp_enqueue_scripts',
-     * 'admin_enqueue_scripts' where all conditional tags are evaluated and the current page is defined. Therefore
-     * AJAX actions sets can rely on it and properly check current page whether to add data or not.
+     * Collects actions labels with provided sides of site. Possible values 'front', 'admin', 'all'.
+     *
+     * @param array $sides
+     *
+     * @return array
      */
-    protected function set_scripts_data() {
-        foreach ( $this->ajax_actions_sets[ $this->get_side() ] as $ajax_actions ) {
-            $this->add_scripts_data( $this->get_side(), $ajax_actions->get_scripts_data() );
+    protected function get_actions_labels_by_sides( array $sides ) {
+        $actions_labels = array();
+        foreach ( $sides as $side ) {
+            $actions_labels = array_merge( array(), $actions_labels, $this->actions_labels_by_side[ $side ] );
         }
+        
+        return $actions_labels;
+    }
+    
+    /**
+     * Collects scripts data by invoking callbacks for frontend scripts according to provided sides. This method runs
+     * during actions 'wp_enqueue_scripts','admin_enqueue_scripts' where all conditional tags are evaluated and the
+     * current page is defined. Therefore AJAX actions sets can rely on it and properly check current page whether to
+     * add data or not.
+     *
+     * Possible sides values are: 'front', 'admin', 'all'.
+     *
+     * @param array $sides
+     *
+     * @return array
+     */
+    protected function get_scripts_data( array $sides ) {
+        $scripts_data = array();
+        
+        foreach ( $sides as $side ) {
+            /**
+             * @var AJAX_Actions $ajax_actions
+             */
+            foreach ( $this->ajax_actions_sets[ $side ] as $ajax_actions ) {
+                $data = $ajax_actions->get_scripts_data();
+                if ( empty( $data ) ) {
+                    continue;
+                }
+                foreach ( $data as $key => $value ) {
+                    $scripts_data[ $key ] = $value;
+                }
+            }
+        }
+        
+        return $scripts_data;
     }
     
     /**
@@ -222,7 +244,7 @@ class AJAX {
         $added_actions = array();
         foreach ( $this->ajax_actions as $action ) {
             if ( in_array( $action['action'], $added_actions ) ) {
-                throw new \InvalidArgumentException( 'There is a key collision between ajax actions' );
+                throw new \InvalidArgumentException( 'There is a key collision between ajax actions. Action:' . $action['action'] );
             }
             if ( isset( $action['logged'] ) ) {
                 if ( ! empty( $action['logged'] ) ) {
