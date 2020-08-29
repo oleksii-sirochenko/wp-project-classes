@@ -40,13 +40,21 @@ class Autoloader {
      */
     protected $directory_iterator;
     
+    /**
+     * Absolute path to includes folder. Used with exported map.
+     *
+     * @var string
+     */
+    protected $path_to_includes;
+    
     function __construct() {
         /**
          * class mapper can be found in github repository:
          * https://github.com/alex-2077/php-classes-mapper
          */
         if ( file_exists( __DIR__ . '/exported-map.php' ) ) {
-            $this->classes_map = include 'exported-map.php';
+            $this->classes_map      = include 'exported-map.php';
+            $this->path_to_includes = realpath( __DIR__ . '/../../' );
         } else {
             $this->set_directory_iterator();
         }
@@ -61,7 +69,7 @@ class Autoloader {
     function load_from_custom_directories( $class_name ) {
         if ( ! empty( $this->classes_map ) ) {
             if ( isset( $this->classes_map[ $class_name ] ) &&
-                 ! empty( $file_real_path = realpath( __DIR__ . DIRECTORY_SEPARATOR . $this->classes_map[ $class_name ] ) ) ) {
+                 ! empty( $file_real_path = $this->path_to_includes . $this->classes_map[ $class_name ] ) ) {
                 require_once $file_real_path;
                 
                 return;

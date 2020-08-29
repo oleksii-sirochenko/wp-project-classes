@@ -154,6 +154,8 @@ class AJAX {
     
     /**
      * Attaches custom backed data 'scripts_data' to use in frontend (JS).
+     *
+     * @hooked
      */
     public function enqueue_scripts() {
         if ( $this->is_localized === true ) {
