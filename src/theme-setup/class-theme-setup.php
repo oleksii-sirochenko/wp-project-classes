@@ -72,7 +72,7 @@ class Theme_Setup {
      * Loads theme text domain for translations purpose.
      */
     protected function load_theme_textdomain() {
-        load_theme_textdomain( 'domain', get_stylesheet_directory() . '/languages' );
+        load_theme_textdomain( 'domain', PATH . '/languages' );
     }
     
     /**

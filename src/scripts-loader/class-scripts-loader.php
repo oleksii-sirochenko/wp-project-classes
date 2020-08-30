@@ -8,23 +8,8 @@ namespace your\space;
  * in a certain class for shortcode or other similar purpose, but it should be as an exception.
  */
 class Scripts_Loader {
-    /**
-     * @var string $min Prefix for assets files to use in production environment.
-     */
-    protected $min = '';
-    protected $directory_uri;
     
     function __construct() {
-        $this->directory_uri = get_template_directory_uri();
-    }
-    
-    /**
-     * Initializes main object functionality.
-     */
-    function init() {
-        if ( ! SCRIPT_DEBUG ) {
-            $this->min = '.min';
-        }
     }
     
     /**
@@ -63,7 +48,7 @@ class Scripts_Loader {
      */
     protected function enqueue_scripts() {
         // wp_enqueue_script();
-        wp_enqueue_script( 'test-ajax', $this->directory_uri . '/assets/js/test' . $this->min . '.js', array( 'jquery' ) );
+        wp_enqueue_script( 'test-ajax', ASSETS_URL . '/js/test' . MIN . '.js', array( 'jquery' ) );
     }
     
     /**

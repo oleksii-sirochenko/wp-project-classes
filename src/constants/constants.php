@@ -83,7 +83,7 @@ define( 'VERSION', '1.0.0' );
  *
  * @var string ASSETS_URL
  */
-define( 'ASSETS_URL', URL . 'assets' );
+define( 'ASSETS_URL', URL . '/assets' );
 
 /**
  * Constant to use in scripts and styles url. When SCRIPT_DEBUG is true your assets will be enqueued as normal files,
