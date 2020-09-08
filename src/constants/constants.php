@@ -90,3 +90,10 @@ define( 'ASSETS_URL', URL . '/assets' );
  * but when you are not debugging your assets will be enqueued as minified versions.
  */
 define( 'MIN', SCRIPT_DEBUG ? '' : '.min' );
+
+/**
+ * Constant identifies that current site works in localhost environment and not in production. To use this constant
+ * set is_localhost variable in apache config. This constant for those situations when you can't rely on WP_DEBUG
+ * because of the test server and you should have identification of your development environment.
+ */
+define('IS_LOCALHOST', getenv( 'is_localhost' ) === 'true');
