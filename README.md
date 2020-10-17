@@ -1,9 +1,9 @@
 # wp-project-classes
 A bunch of useful classes for Wordpress related development. These classes aren't related to the last versions of Wordpress and therefore it may be used with any latest version.
 
-Required version PHP >= 5.6
+Required version PHP >= 5.6, in 2021 repository will bump required PHP version to 7.2.
 
-Version 1.9.0
+Version 1.9.1
 
 With a help of these classes you can lie solid foundation for your WP related project. Classes are suitable for both theme and plugin development.
 
@@ -29,4 +29,8 @@ With a help of these classes you can lie solid foundation for your WP related pr
 <br>**class-required-pages.php**: Creates required pages on plugin or theme activation with shortcode as a content and adds custom prefix text label for title in pages list view in admin side.
 <br>**shortcodes**: Group of classes to register and manage logic scoped into shortcode.
 
-Copyright (c) 2020 Aleksey Sirochenko https://github.com/alex-2077/
+## Other places
+**constants.php**: Provides project namespaced constants. 
+
+
+Copyright (c) Aleksey Sirochenko https://github.com/alex-2077/
