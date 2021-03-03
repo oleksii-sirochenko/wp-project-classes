@@ -131,7 +131,7 @@ final class Reg {
     }
     
     /**
-     * Debug method that usully invokes in the very beginning of the page. You can add your code to this method and
+     * Debug method that usually invokes in the very beginning of the page. You can add your code to this method and
      * debug it or print output.
      */
     protected function test() {

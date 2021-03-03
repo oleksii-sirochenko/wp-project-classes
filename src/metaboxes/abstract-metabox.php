@@ -73,7 +73,7 @@ abstract class Metabox {
     /**
      * Metabox post meta key.
      */
-    const OPTION = 'option';
+    const KEY = 'option';
     
     /**
      * Attaches methods to hooks.
@@ -81,7 +81,7 @@ abstract class Metabox {
     public function hooks() {
         $this->add_meta_boxes_by_post_types();
         $this->save_metaboxes_by_post_types();
-        $this->wp_enqueue_scripts();
+        add_action( 'admin_enqueue_scripts', array( $this, 'wp_enqueue_assets' ) );
     }
     
     /**
@@ -103,9 +103,9 @@ abstract class Metabox {
     }
     
     /**
-     * Enqueues script on edit page.
+     * Enqueues script and styles on edit page.
      */
-    public function wp_enqueue_scripts() {
+    public function wp_enqueue_assets() {
     
     }
     
@@ -135,7 +135,7 @@ abstract class Metabox {
      *
      * @param $post_id
      */
-    function save_metabox( $post_id ) {
+    public function save_metabox( $post_id ) {
         if ( ! $this->validate_request() ) {
             return;
         }
@@ -146,7 +146,7 @@ abstract class Metabox {
      *
      * @return bool
      */
-    function validate_request() {
+    public function validate_request() {
         return isset( $_POST[ $this->nonce_name ] ) &&
                wp_verify_nonce( $_POST[ $this->nonce_name ], $this->nonce_action ) &&
                current_user_can( 'manage_options' );
@@ -157,7 +157,7 @@ abstract class Metabox {
      *
      * @throws \Exception
      */
-    function render_custom_metabox() {
+    public function render_custom_metabox() {
         wp_nonce_field( $this->nonce_action, $this->nonce_name );
         
         $args = $this->get_template_args();
@@ -177,7 +177,7 @@ abstract class Metabox {
      *
      * @return array
      */
-    function get_template_args() {
+    public function get_template_args() {
         global $post;
         
         $args = array();

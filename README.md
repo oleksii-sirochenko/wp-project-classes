@@ -3,7 +3,7 @@ A bunch of useful classes for Wordpress related development. These classes aren'
 
 Required version PHP >= 5.6, in 2021 repository will bump required PHP version to 7.2.
 
-Version 1.9.1
+Version 1.9.2
 
 With a help of these classes you can lie solid foundation for your WP related project. Classes are suitable for both theme and plugin development.
 
@@ -33,4 +33,4 @@ With a help of these classes you can lie solid foundation for your WP related pr
 **constants.php**: Provides project namespaced constants. 
 
 
-Copyright (c) Aleksey Sirochenko https://github.com/alex-2077/
+Copyright (c) Alex Sirochenko https://github.com/alex-sirochenko/
