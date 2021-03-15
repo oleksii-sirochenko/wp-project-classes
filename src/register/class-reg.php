@@ -5,7 +5,7 @@ namespace your\space;
 /**
  * Registry is a final singleton class that controls classes.
  */
-final class Reg {
+class Reg {
     /**
      * Singleton instance.
      *
@@ -41,16 +41,14 @@ final class Reg {
      *
      * @return Reg
      */
-    static function inst() {
-        if ( isset( self::$instance ) ) {
-            return self::$instance;
-        } else {
-            self::$instance = new self();
-            self::$instance->init();
-            
-            return self::$instance;
-        }
-    }
+	static function inst() {
+		if ( ! isset( static::$instance ) ) {
+			static::$instance = new static();
+			static::$instance->init();
+		}
+		
+		return static::$instance;
+	}
     
     /**
      * Initializes object once per load.

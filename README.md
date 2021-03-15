@@ -3,12 +3,12 @@ A bunch of useful classes for Wordpress related development. These classes aren'
 
 Required version PHP >= 5.6, in 2021 repository will bump required PHP version to 7.2.
 
-Version 1.9.2
+Version 1.9.3
 
 With a help of these classes you can lie solid foundation for your WP related project. Classes are suitable for both theme and plugin development.
 
 ## Core classes for ground up development are:
-**class-autoloader.php**: Autoloader + Class mapper (https://github.com/alex-2077/php-classes-mapper) - loads php classes
+**class-autoloader.php**: Autoloader + Class mapper (https://github.com/alex-sirochenko/php-classes-mapper) - loads php classes
 <br>**class-reg.php**: Register (the main pole) - does class initialization, grouping and provides global namespaced access as final singleton.
 <br>**class-scripts-loader.php**: Scripts loader - place where all your assets (scripts, styles) are being attached for front and admin side
 <br>**class-template-loader.php**: Template loader - loads PHP files with HTML temlates and PHP logic insertion

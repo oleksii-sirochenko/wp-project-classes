@@ -48,10 +48,6 @@ class Autoloader {
     protected $path_to_includes;
     
     function __construct() {
-        /**
-         * class mapper can be found in github repository:
-         * https://github.com/alex-2077/php-classes-mapper
-         */
         if ( file_exists( __DIR__ . '/exported-map.php' ) ) {
             $this->classes_map      = include 'exported-map.php';
             $this->path_to_includes = realpath( __DIR__ . '/../../' );
