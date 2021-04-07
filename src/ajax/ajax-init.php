@@ -13,4 +13,4 @@ namespace your\space;
  * @var AJAX $this
  */
 
-$this->add_front_side_ajax_actions( new Front_Page_AJAX_Actions() );
+$this->add_ajax_actions( new Front_Page_AJAX_Actions() );

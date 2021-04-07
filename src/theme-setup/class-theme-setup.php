@@ -53,6 +53,7 @@ class Theme_Setup {
 		remove_action( 'wp_head', 'wp_generator' );
 		remove_action( 'wp_head', 'wlwmanifest_link' );
 		remove_action( 'wp_head', 'wc_gallery_noscript' );
+		remove_action( 'wp_head', 'feed_links_extra', 3 );
 		add_filter( 'the_generator', '__return_empty_string' );
 		add_filter( 'get_the_generator_html', '__return_empty_string' );
 		add_filter( 'get_the_generator_xhtml', '__return_empty_string' );

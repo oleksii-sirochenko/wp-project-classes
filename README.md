@@ -1,9 +1,21 @@
 # wp-project-classes
 A bunch of useful classes for Wordpress related development. These classes aren't related to the last versions of Wordpress and therefore it may be used with any latest version.
 
-Required version PHP >= 5.6, in 2021 repository will bump required PHP version to 7.2.
+Required PHP version >= 7.2
 
-Version 1.9.3
+Version 1.10.0
+
+### 2021 todo list:
+-[x] Framework name.
+-[x] Domain.
+-[x] Change log.
+-[ ] Settings pages management improvement.
+-[ ] Compose files for quick start.
+-[ ] Cover all code with meaningful comments.
+-[ ] Add return hints where possible.
+-[ ] Create site on WP.
+-[ ] Start documentation and examples.
+-[ ] Bump PHP version >= 7.4
 
 With a help of these classes you can lie solid foundation for your WP related project. Classes are suitable for both theme and plugin development.
 

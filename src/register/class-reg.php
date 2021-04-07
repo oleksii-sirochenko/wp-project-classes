@@ -20,16 +20,8 @@ class Reg {
 	 */
 	public $tmpl;
 	
-	/**
-	 * AJAX controller. Attaches all AJAX actions with their handlers.
-	 *
-	 * @var AJAX
-	 */
-	public $ajax;
-	
 	protected function __construct() {
 		$this->tmpl = new Template_Loader( PATH );
-		$this->init_ajax();
 		
 		if ( is_admin() ) {
 		
@@ -41,7 +33,7 @@ class Reg {
 	 *
 	 * @return Reg
 	 */
-	static function inst() {
+	static function inst(): Reg {
 		if ( ! isset( static::$instance ) ) {
 			static::$instance = new static();
 			static::$instance->init();
@@ -53,7 +45,7 @@ class Reg {
 	/**
 	 * Initializes object once per load.
 	 */
-	protected function init() {
+	protected function init(): void {
 		$this->run_initializing_methods_on_objects();
 		$this->run_hooks_on_objects();
 	}
@@ -65,7 +57,7 @@ class Reg {
 	 * In this case init it is common setup of the object and hooks it is dedicated to setup handlers
 	 * for wordpress hooks
 	 */
-	protected function run_initializing_methods_on_objects() {
+	protected function run_initializing_methods_on_objects(): void {
 		foreach ( $this as $object ) {
 			if ( is_object( $object ) ) {
 				$this->run_initializing_methods_on_object( $object, array( 'init', 'hooks' ) );
@@ -79,7 +71,7 @@ class Reg {
 	 * @param       $object
 	 * @param array $methods
 	 */
-	protected function run_initializing_methods_on_object( $object, array $methods ) {
+	protected function run_initializing_methods_on_object( $object, array $methods ): void {
 		foreach ( $methods as $method ) {
 			if ( method_exists( $object, $method ) ) {
 				$object->$method();
@@ -93,9 +85,11 @@ class Reg {
 	 * instance of this object in Register property. So you simply add this object here and you are free of additional
 	 * allocation of new property inside of Register.
 	 */
-	protected function run_hooks_on_objects() {
+	protected function run_hooks_on_objects(): void {
 		$objects = array(
 			new Scripts_Loader(),
+			new AJAX(),
+			new Theme_Setup(),
 		);
 		
 		if ( is_admin() ) {
@@ -108,17 +102,9 @@ class Reg {
 	}
 	
 	/**
-	 * Initializes AJAX logic. In this method you can create AJAX controller and add object with ajax actions to it.
-	 */
-	protected function init_ajax() {
-		$this->ajax = new AJAX();
-		$this->ajax->add_front_side_ajax_actions( new Front_Page_AJAX_Actions() );
-	}
-	
-	/**
 	 * Attaches debug method for frontend and admin side. You can invoke this method in 'init' method.
 	 */
-	protected function add_debug_method() {
+	protected function add_debug_method(): void {
 		$callback = function () {
 			if ( ! wp_doing_ajax() ) {
 				$this->test();
@@ -132,7 +118,7 @@ class Reg {
 	 * Debug method that usually invokes in the very beginning of the page. You can add your code to this method and
 	 * debug it or print output.
 	 */
-	protected function test() {
+	protected function test(): void {
 	
 	}
 }

@@ -1,0 +1,7 @@
+== Changelog ==
+
+= 1.10.0 2021-04-07 =
+* Update - AJAX logic update. Rethinked main AJAX file. Introduced AJAX_Guard class which sanitizes and validates incoming request
+data.
+* Add - Added new constants for AJAX requests.
+* Add - Changelog created.

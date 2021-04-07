@@ -97,3 +97,25 @@ define( __NAMESPACE__ . '\MIN', SCRIPT_DEBUG ? '' : '.min' );
  * because of the test server and you should have identification of your development environment.
  */
 define( __NAMESPACE__ . '\IS_LOCALHOST', getenv( 'is_localhost' ) === 'true' );
+
+/**
+ * Constant that identifies success status. Can be used anywhere to identify current status. Should be used always used
+ * in array result of AJAX handler with a 'status' key.
+ */
+define( __NAMESPACE__ . '\STATUS_SUCCESS', 'success' );
+
+/**
+ * Constant that identifies error status. Can be used anywhere to identify current status. Should be used always used
+ * in array result of AJAX handler with a 'status' key.
+ */
+define( __NAMESPACE__ . '\STATUS_ERROR', 'error' );
+
+/**
+ * Used to attach AJAX config in frontend JS side.
+ */
+define( __NAMESPACE__ . '\AJAX_CONFIG_KEY', 'wp_ajax_config' );
+
+/**
+ * Used to identify nonce action for AJAX request.
+ */
+define( __NAMESPACE__ . '\AJAX_ACTION', 'wp_general_ajax_action' );
