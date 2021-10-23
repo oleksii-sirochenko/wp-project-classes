@@ -31,118 +31,31 @@ class AJAX_Guard {
 	public function guard_action(): void {
 		$args = $_REQUEST;
 		
-		$args     = $this->sanitize( $args );
-		$response = $this->validate( $args );
-		
-		unset( $args['action'] );
-		unset( $args['nonce'] );
-		
-		if ( $response[0] === STATUS_ERROR ) {
-			$this->do_response( $response );
-		}
-		
-		$response = call_user_func( $this->action['callback'], $args );
-		$this->do_response( $response );
-	}
-	
-	/**
-	 * Sanitizes provided data.
-	 *
-	 * @param array $args
-	 *
-	 * @return array
-	 */
-	protected function sanitize( array $args ): array {
-		foreach ( $this->action['args'] as $key => $arg ) {
-			if ( isset( $arg['default'] ) && ! isset( $args[ $key ] ) ) {
-				$args[ $key ] = $arg['default'];
-			}
-			
-			if ( ! isset( $arg['sanitize_callback'] ) ||
-			     ! is_array( $arg['sanitize_callback'] ) ||
-			     empty( $arg['sanitize_callback'] )
-			) {
-				continue;
-			}
-			
-			foreach ( $arg['sanitize_callback'] as $callback ) {
-				if ( ! isset( $args[ $key ] ) ) {
-					continue;
-				}
-				if ( is_callable( $callback ) ) {
-					$args[ $key ] = call_user_func( $callback, $args[ $key ] );
-				} elseif ( is_array( $callback ) ) {
-					foreach ( $callback as $item ) {
-						if ( is_callable( $item ) ) {
-							$args[ $key ] = call_user_func( $item, $args[ $key ] );
-						}
-					}
-				}
-			}
-		}
-		
-		return $args;
-	}
-	
-	/**
-	 * Validates provided data.
-	 *
-	 * @param array $args
-	 *
-	 * @return array
-	 */
-	protected function validate( array $args ): array {
-		$invalid_fields = array();
-		
 		if ( ! isset( $args['nonce'] ) || ! wp_verify_nonce( $args['nonce'], AJAX_ACTION ) ) {
-			$invalid_fields[] = 'nonce';
+			$this->do_response( array(
+				STATUS_ERROR,
+				array(
+					'errors' => array(
+						'nonce' => 'nonce is not valid',
+					)
+				)
+			) );
 		}
 		
-		foreach ( $this->action['args'] as $key => $arg ) {
-			if ( isset( $arg['required'] ) && ! isset( $args[ $key ] ) ) {
-				$invalid_fields[] = $key;
-				continue;
-			}
-			
-			$callback = $arg['validate_callback'];
-			
-			if ( is_callable( $callback ) ) {
-				$this->validate_field( $invalid_fields, $callback, $args, $key );
-			} elseif ( is_string( $callback ) && is_callable( __NAMESPACE__ . '\\' . $callback ) ) {
-				$this->validate_field( $invalid_fields, __NAMESPACE__ . '\\' . $callback, $args, $key );
-			} elseif ( is_array( $callback ) && ! empty( $callback ) ) {
-				foreach ( $callback as $item ) {
-					if ( is_callable( $item ) ) {
-						$this->validate_field( $invalid_fields, $item, $args, $key );
-					}
-				}
-			}
+		$data_validator = new Data_Validator();
+		$result         = $data_validator->process_data( $args, $this->action['args'] );
+		
+		if ( ! empty( $result['errors'] ) ) {
+			$this->do_response( array(
+				STATUS_ERROR,
+				array(
+					'errors' => $result['errors'],
+				)
+			) );
 		}
 		
-		if ( empty( $invalid_fields ) ) {
-			$status = STATUS_SUCCESS;
-		} else {
-			$status = STATUS_ERROR;
-			$args   = array(
-				'invalid_fields' => $invalid_fields,
-			);
-		}
-		
-		return array( $status, $args );
-	}
-	
-	/**
-	 * Validates field and marks field as invalid if callback result is not true.
-	 *
-	 * @param array    $invalid_fields
-	 * @param callable $callback
-	 * @param array    $args
-	 * @param          $key
-	 */
-	protected function validate_field( array &$invalid_fields, callable $callback, array $args, $key ): void {
-		if ( empty( call_user_func( $callback, $args[ $key ], $args, $key ) ) ) {
-			$invalid_fields[ $key ] = $args[ $key ];
-		}
+		$response = call_user_func( $this->action['callback'], $result['data'] );
+		$this->do_response( $response );
 	}
 	
 	/**
@@ -153,7 +66,7 @@ class AJAX_Guard {
 	 *
 	 * @param $response
 	 */
-	protected function do_response( $response ): void {
+	protected function do_response( $response = null ): void {
 		$status = STATUS_SUCCESS;
 		$data   = $response;
 		

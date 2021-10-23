@@ -1,7 +1,10 @@
 == Changelog ==
+= 1.11.0 2021-11-08 =
+* Introduced Data_Validator class that is very useful for AJAX, REST API and general data validation.
+* Update AJAX controller and AJAX Guard. Guard now uses new Data_Validator class.
 
 = 1.10.0 2021-04-07 =
-* Update - AJAX logic update. Rethinked main AJAX file. Introduced AJAX_Guard class which sanitizes and validates incoming request
+* Update - AJAX logic update. Redesigned main AJAX file. Introduced AJAX_Guard class which sanitizes and validates incoming request
 data.
 * Add - Added new constants for AJAX requests.
 * Add - Changelog created.

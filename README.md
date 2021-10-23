@@ -1,9 +1,11 @@
+Project when I have spare time.
+
 # wp-project-classes
 A bunch of useful classes for Wordpress related development. These classes aren't related to the last versions of Wordpress and therefore it may be used with any latest version.
 
 Required PHP version >= 7.2
 
-Version 1.10.0
+Version 1.11.0
 
 ### 2021 todo list:
 - [x] Framework name.
@@ -40,6 +42,7 @@ With a help of these classes you can lie solid foundation for your WP related pr
 <br>**class-hooked-objects-storage.php**: Storage for your objects that have been attached to apply_filters, do_action. It will help to find object link to use them in remove_filter, remove_action functions. It is more required for projects like custom theme or plugin rather than customer's site project.
 <br>**class-required-pages.php**: Creates required pages on plugin or theme activation with shortcode as a content and adds custom prefix text label for title in pages list view in admin side.
 <br>**shortcodes**: Group of classes to register and manage logic scoped into shortcode.
+<br>**class-data-validator**: Provides standardized way to validate data input from AJAX, REST API requests and in general data validation process.
 
 ## Other places
 **constants.php**: Provides project namespaced constants. 

@@ -97,7 +97,7 @@ class Reg {
 		}
 		
 		foreach ( $objects as $object ) {
-			$this->run_initializing_methods_on_object( $object, array( 'hooks' ) );
+			$this->run_initializing_methods_on_object( $object, array( 'init', 'hooks' ) );
 		}
 	}
 	

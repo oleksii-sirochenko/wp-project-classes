@@ -24,6 +24,9 @@ class Theme_Setup {
 	 * Unhooks undesired REST API support. Useful when site is not meant to be REST API compliant.
 	 */
 	protected function unhook_rest_api() {
+		if ( is_user_logged_in() ) {
+			return;
+		}
 		// Remove the REST API completely.
 		remove_action( 'init', 'rest_api_init' );
 		remove_all_filters( 'rest_api_init' );
@@ -53,6 +56,7 @@ class Theme_Setup {
 		remove_action( 'wp_head', 'wp_generator' );
 		remove_action( 'wp_head', 'wlwmanifest_link' );
 		remove_action( 'wp_head', 'wc_gallery_noscript' );
+		remove_action( 'wp_head', 'feed_links', 2 );
 		remove_action( 'wp_head', 'feed_links_extra', 3 );
 		add_filter( 'the_generator', '__return_empty_string' );
 		add_filter( 'get_the_generator_html', '__return_empty_string' );
@@ -62,6 +66,22 @@ class Theme_Setup {
 		add_filter( 'get_the_generator_comment', '__return_empty_string' );
 		add_filter( 'get_the_generator_export', '__return_empty_string' );
 		add_filter( 'wf_disable_generator_tags', '__return_empty_string' );
+		
+		add_action( 'do_feed', array( $this, 'disable_feed' ), 1 );
+		add_action( 'do_feed_rdf', array( $this, 'disable_feed' ), 1 );
+		add_action( 'do_feed_rss', array( $this, 'disable_feed' ), 1 );
+		add_action( 'do_feed_rss2', array( $this, 'disable_feed' ), 1 );
+		add_action( 'do_feed_atom', array( $this, 'disable_feed' ), 1 );
+		add_action( 'do_feed_rss2_comments', array( $this, 'disable_feed' ), 1 );
+		add_action( 'do_feed_atom_comments', array( $this, 'disable_feed' ), 1 );
+	}
+	
+	/**
+	 * Disables feed on site.
+	 */
+	public function disable_feed(): void {
+		wp_redirect( home_url() . '/404.php' );
+		die;
 	}
 	
 	/**
@@ -91,6 +111,7 @@ class Theme_Setup {
 	 * Enables features of theme.
 	 */
 	protected function add_theme_support() {
+		add_theme_support( 'html5', [ 'style', 'script' ] );
 		add_theme_support( 'post-thumbnails' );
 		add_theme_support( 'menus' );
 	}

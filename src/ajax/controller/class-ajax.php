@@ -96,17 +96,8 @@ class AJAX {
 	public function admin_init(): void {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		
-		$this->load_functions();
 		$this->load_actions();
 		$this->attach_actions();
-	}
-	
-	/**
-	 * Loads specific functions to help validate and sanitize AJAX requests.
-	 */
-	public function load_functions(): void {
-		require __DIR__ . '/../functions/sanitizers.php';
-		require __DIR__ . '/../functions/validators.php';
 	}
 	
 	/**

@@ -15,25 +15,45 @@ class Front_Page_AJAX_Actions implements AJAX_Actions {
 					
 					return array( STATUS_SUCCESS, $response );
 				},
-				'args'     => array(
-					'hello' => array(
-						'default'           => 'hello',
-						'required'          => true,
-						'sanitize_callback' => array(
+				'args'     =>  array(
+					'key1' => array(
+						'type'               => 'string',
+						'required'           => true,
+						'not_empty'          => true,
+						'error_messages'     => array(
+							'required'  => 'Custom message. This field is required.',
+							'not_empty' => 'Custom message. This field can not be empty.',
+						),
+						'sanitize_callbacks' => array(
 							'sanitize_text_field',
 						),
-						'validate_callback' => array(),
+						'validate_callbacks' => array(
+							array(
+								'callback'      => '\your\space\is_not_empty',
+								'error_message' => 'This field can not be empty.',
+							),
+						),
 					),
-					'world' => array(
-						'default'           => 'world',
-						'required'          => true,
-						'sanitize_callback' => array(
+					'key2' => array(
+						'type'               => 'string',
+						'required'           => true,
+						'not_empty'          => true,
+						'default'            => 'world',
+						'error_messages'     => array(
+							'required'  => 'Custom message. This field is required.',
+							'not_empty' => 'Custom message. This field can not be empty.',
+						),
+						'sanitize_callbacks' => array(
 							'sanitize_text_field',
 						),
-						'validate_callback' => array(),
-					)
+						'validate_callbacks' => array(
+							array(
+								'callback'      => '\your\space\is_not_empty',
+								'error_message' => 'This field can not be empty.',
+							),
+						),
+					),
 				),
-			
 			),
 		);
 	}

@@ -193,7 +193,7 @@ abstract class Metabox {
 	 * @return array
 	 */
 	protected function get_meta( $id ) {
-		$post_meta = get_post_meta( $id, static::OPTION, true );
+		$post_meta = get_post_meta( $id, static::KEY, true );
 		if ( ! is_array( $post_meta ) ) {
 			return array();
 		}
